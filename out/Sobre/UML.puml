@@ -1,0 +1,48 @@
+@startuml name
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+package "IdentityAccess Context" {
+    class User <<Aggregate Root>> {
+        - id: UUID
+        - username: String
+        - email: String
+        - passwordHash: String
+        - isProfilePublic: boolean
+        + makeProfilePublic(): void
+        + makeProfilePrivate(): void
+    }
+}
+
+package "KnowledgeCore Context" {
+    class Challenge <<Aggregate Root>> {
+        - id: UUID
+        - authorId: UUID
+        - title: String
+        - platformOrigin: String
+        - sourceCode: String
+        - timeComplexity: String
+        - spaceComplexity: String
+        - aiAutonomyIndex: Integer
+        - isPublic: boolean
+        + updateResolution(code: String, time: String, space: String): void
+        + publish(): void
+    }
+
+    class Snippet <<Entity>> {
+        - id: UUID
+        - challengeId: UUID
+        - code: String
+        - conceptCategory: String
+    }
+}
+
+User "1" --> "0..*" Challenge : authorId
+Challenge "1" *-- "0..*" Snippet : composition
+
+note right of Challenge
+    A referência ao User ocorre por 'authorId' (UUID) 
+    e não por referência de objeto, garantindo
+    baixo acoplamento entre os contextos.
+end note
+@enduml
