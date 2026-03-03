@@ -42,7 +42,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public boolean existByUsername(String username) {
-        return springDataUserRepository.existsByEmail(username);
+        return springDataUserRepository.existsByUsername(username);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.projeto.codearchive.shared.infrastructure.web.exception.security;
+package com.projeto.codearchive.shared.infrastructure.web.security;
 
 import java.io.IOException;
 import java.util.List;

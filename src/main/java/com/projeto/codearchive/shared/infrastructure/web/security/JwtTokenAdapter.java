@@ -1,4 +1,4 @@
-package com.projeto.codearchive.shared.infrastructure.web.exception.security;
+package com.projeto.codearchive.shared.infrastructure.web.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
