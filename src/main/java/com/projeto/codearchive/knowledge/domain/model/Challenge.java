@@ -61,6 +61,11 @@ public class Challenge {
         this.updatedAt = OffsetDateTime.now();
     }
 
+    public void unpublish() {
+        this.isPublic = false;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
     // Retorna uma lista imutável para proteger o encapsulamento da coleção
     public List<Snippet> getSnippets() {
         return Collections.unmodifiableList(snippets);
