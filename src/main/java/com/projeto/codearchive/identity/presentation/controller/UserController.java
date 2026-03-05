@@ -9,6 +9,10 @@ import com.projeto.codearchive.identity.application.dto.UserProfileResponse;
 import com.projeto.codearchive.identity.application.usecase.RegisterUserUseCase;
 import com.projeto.codearchive.identity.presentation.dto.RegisterUserRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@Tag(name = "Users", description = "Gestão de registo e perfis de utilizadores do Code Archive")
 public class UserController {
     
     private final RegisterUserUseCase registerUserUseCase;
@@ -28,6 +33,12 @@ public class UserController {
         this.registerUserUseCase = registerUserUseCase;
     }
 
+    @Operation(summary = "Registar um novo utilizador", description = "Cria uma nova conta na plataforma e devolve os dados básicos do perfil.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Utilizador criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Falha na validação dos dados de entrada"),
+            @ApiResponse(responseCode = "409", description = "Conflito: Email ou Username já encontram-se registados")
+    })
     @PostMapping
     public ResponseEntity<UserProfileResponse> registerUser(@Valid @RequestBody RegisterUserRequest request) {
         // Mapeamento: Web Request -> Application Command

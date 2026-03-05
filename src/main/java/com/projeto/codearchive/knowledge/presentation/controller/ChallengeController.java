@@ -29,10 +29,15 @@ import com.projeto.codearchive.knowledge.application.usecase.SubmitChallengeUseC
 import com.projeto.codearchive.knowledge.presentation.dto.ChangeVisibilityRequest;
 import com.projeto.codearchive.knowledge.presentation.dto.SubmitChallengeRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/challenges")
+@Tag(name = "Challenges", description = "Gestão do portfólio de desafios de código e snippets")
 public class ChallengeController {
     
     private final SubmitChallengeUseCase submitChallengeUseCase;
@@ -49,6 +54,11 @@ public class ChallengeController {
         this.listPublicChallengesByAuthorUseCase = listPublicChallengesByAuthorUseCase;
     }
 
+    @Operation(summary = "Submeter um novo desafio", description = "Guarda um código-fonte e os seus respetivos snippets associados ao utilizador autenticado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Desafio criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados submetidos inválidos ou incompletos")
+    })
     @PostMapping
     public ResponseEntity<ChallengeResponse> submitChallenge(@Valid @RequestBody SubmitChallengeRequest request, Authentication authentication) {
 
@@ -84,6 +94,8 @@ public class ChallengeController {
         );
     }
 
+    @Operation(summary = "Listar os meus desafios", description = "Retorna uma lista resumida de todos os desafios (públicos e privados) do utilizador autenticado.")
+    @ApiResponse(responseCode = "200", description = "Listagem recuperada com sucesso")
     @GetMapping
     private ResponseEntity<List<ChallengeSummaryResponse>> listMyChallenges(Authentication authentication) {
         UUID authorId = UUID.fromString(authentication.getName());
@@ -93,6 +105,11 @@ public class ChallengeController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Alterar a visibilidade de um desafio", description = "Permite ao autor publicar ou ocultar um desafio do seu portfólio.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Estado alterado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado: Apenas o autor pode alterar este recurso")
+    })
     @PatchMapping("/{id}/visibility")
     public ResponseEntity<Void> changeVisibility(@PathVariable UUID id, @Valid @RequestBody ChangeVisibilityRequest request, Authentication authentication) {
 
@@ -103,6 +120,12 @@ public class ChallengeController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Obter detalhes de um desafio", description = "Recupera o código-fonte integral e os snippets de um desafio específico. Exige que o desafio seja público ou que o utilizador autenticado seja o autor.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Detalhes recuperados com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado: Desafio privado de outro autor"),
+            @ApiResponse(responseCode = "404", description = "Desafio não encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ChallengeDetailResponse> getChallengeDetail(@PathVariable UUID id, Authentication authentication) {
 
@@ -113,6 +136,8 @@ public class ChallengeController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Listar portfólio público de um utilizador", description = "Retorna todos os desafios marcados como públicos de um autor específico.")
+    @ApiResponse(responseCode = "200", description = "Listagem recuperada com sucesso")
     @GetMapping("/user/{authorId}")
     public ResponseEntity<List<ChallengeSummaryResponse>> listUserPublicPortfolio(@PathVariable UUID authorId) {
 
