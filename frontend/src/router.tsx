@@ -8,6 +8,7 @@ import NewChallengePage from './pages/NewChallengePage';
 import ChallengeDetailPage from './pages/ChallengeDetailPage';
 import PortfolioPage from './pages/PortfolioPage';
 import PortfolioEntryPage from './pages/PortfolioEntryPage';
+import ProfilePage from './pages/ProfilePage';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,14 @@ export const router = createBrowserRouter([
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
       { path: 'portfolio', element: <PortfolioEntryPage /> },
+      {
+        path: 'profile',
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: 'challenges',
         element: (

@@ -64,37 +64,58 @@ export default function ChallengeDetailPage() {
     }
   }
 
-  if (loading) return <div style={{ padding: '2rem' }}>A carregar...</div>;
+  if (loading) {
+    return (
+      <div className="py-12 text-center text-gray-500">
+        A carregar...
+      </div>
+    );
+  }
   if (error || !challenge) {
     return (
-      <div style={{ padding: '2rem' }}>
-        <p style={{ color: 'crimson' }}>{error ?? 'Desafio não encontrado.'}</p>
-        <Link to="/challenges">Voltar aos meus desafios</Link>
+      <div className="py-8">
+        <p className="p-4 rounded-lg bg-red-50 text-red-700">
+          {error ?? 'Desafio não encontrado.'}
+        </p>
+        <Link
+          to="/challenges"
+          className="mt-4 inline-block text-codearchive-primary hover:underline"
+        >
+          Voltar aos meus desafios
+        </Link>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: '2rem auto', padding: '0 1rem' }}>
-      <p><Link to="/challenges">← Meus desafios</Link></p>
-      <h1>{challenge.title}</h1>
+    <div className="max-w-4xl mx-auto">
+      <p className="mb-4">
+        <Link
+          to="/challenges"
+          className="text-gray-600 hover:text-codearchive-primary transition-colors"
+        >
+          ← Meus desafios
+        </Link>
+      </p>
+      <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">{challenge.title}</h1>
       {challenge.platformOrigin && (
-        <p style={{ color: '#666' }}>Plataforma: {challenge.platformOrigin}</p>
+        <p className="text-gray-500 mb-1">Plataforma: {challenge.platformOrigin}</p>
       )}
-      <p>
+      <p className="text-gray-600 text-sm mb-4">
         {challenge.timeComplexity && `Tempo: ${challenge.timeComplexity}`}
         {challenge.spaceComplexity && ` · Espaço: ${challenge.spaceComplexity}`}
         {challenge.aiAutonomyIndex != null && ` · IA: ${challenge.aiAutonomyIndex}/5`}
       </p>
-      <p>
+      <p className="text-sm text-gray-500 mb-6">
         {challenge.isPublic ? 'Público' : 'Privado'} · Criado em {formatDate(challenge.createdAt)}
       </p>
 
-      <div style={{ marginBottom: '1rem' }}>
+      <div className="mb-6">
         <button
           type="button"
           onClick={handleToggleVisibility}
           disabled={visibilityLoading}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-60"
         >
           {visibilityLoading
             ? 'A atualizar...'
@@ -104,56 +125,35 @@ export default function ChallengeDetailPage() {
         </button>
       </div>
 
-      <section style={{ marginBottom: '2rem' }}>
-        <h2>Código-fonte</h2>
-        <pre
-          style={{
-            background: '#f5f5f5',
-            padding: '1rem',
-            borderRadius: 8,
-            overflow: 'auto',
-            fontSize: '0.9rem',
-          }}
-        >
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Código-fonte</h2>
+        <pre className="bg-gray-100 rounded-lg p-4 overflow-x-auto text-sm font-mono text-gray-800 border border-gray-200">
           <code>{challenge.sourceCode}</code>
         </pre>
       </section>
 
       {challenge.snippets.length > 0 && (
         <section>
-          <h2>Snippets / Aprendizados</h2>
-          {challenge.snippets.map((s) => (
-            <div
-              key={s.id}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: 8,
-                padding: '1rem',
-                marginBottom: '0.5rem',
-              }}
-            >
-              {s.conceptCategory && (
-                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
-                  {s.conceptCategory}
-                </strong>
-              )}
-              {s.description && (
-                <p style={{ marginBottom: '0.5rem', color: '#555' }}>{s.description}</p>
-              )}
-              <pre
-                style={{
-                  background: '#f5f5f5',
-                  padding: '0.5rem',
-                  borderRadius: 4,
-                  overflow: 'auto',
-                  fontSize: '0.85rem',
-                }}
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Snippets / Aprendizados</h2>
+          <div className="space-y-3">
+            {challenge.snippets.map((s) => (
+              <div
+                key={s.id}
+                className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm"
               >
-                <code>{s.code}</code>
-              </pre>
-              <small style={{ color: '#888' }}>{formatDate(s.createdAt)}</small>
-            </div>
-          ))}
+                {s.conceptCategory && (
+                  <strong className="block text-gray-900 mb-1">{s.conceptCategory}</strong>
+                )}
+                {s.description && (
+                  <p className="mb-2 text-gray-600 text-sm">{s.description}</p>
+                )}
+                <pre className="bg-gray-100 rounded p-3 overflow-x-auto text-xs font-mono text-gray-800 border border-gray-200">
+                  <code>{s.code}</code>
+                </pre>
+                <small className="text-gray-400 text-xs">{formatDate(s.createdAt)}</small>
+              </div>
+            ))}
+          </div>
         </section>
       )}
     </div>

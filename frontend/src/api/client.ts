@@ -52,6 +52,25 @@ export class ApiError extends Error {
 }
 
 // Auth
+export async function getProfile(getToken: GetToken): Promise<UserProfileResponse> {
+  const token = getToken();
+  if (!token) throw new ApiError(401, 'Not authenticated');
+  return request<UserProfileResponse>('/users/me', { token });
+}
+
+export async function updateProfileVisibility(
+  body: { isPublic: boolean },
+  getToken: GetToken
+): Promise<void> {
+  const token = getToken();
+  if (!token) throw new ApiError(401, 'Not authenticated');
+  return request<void>('/users/me', {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+    token,
+  });
+}
+
 export async function login(body: LoginRequest): Promise<TokenResponse> {
   return request<TokenResponse>('/auth/login', {
     method: 'POST',

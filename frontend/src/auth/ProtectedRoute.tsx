@@ -7,7 +7,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (!isReady) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <div className="py-12 text-center text-gray-500">
         A carregar...
       </div>
     );

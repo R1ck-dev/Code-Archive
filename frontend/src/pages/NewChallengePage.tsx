@@ -4,6 +4,27 @@ import { useAuth } from '../auth/AuthContext';
 import { submitChallenge, ApiError } from '../api';
 import type { SnippetRequest } from '../api';
 
+const inputClass =
+  'block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-codearchive-primary focus:border-codearchive-primary text-slate-900';
+const labelClass = 'block text-sm font-medium text-slate-700 mb-1';
+
+const CONCEPT_CATEGORIES = [
+  'Estrutura de Dados',
+  'Matemática',
+  'Algoritmos',
+  'Strings',
+  'Grafos',
+  'Ordenação e Busca',
+  'Programação Dinâmica',
+  'Recursão',
+  'POO',
+  'Concorrência',
+  'Bases de Dados',
+  'Redes',
+  'Segurança',
+  'Outro',
+] as const;
+
 export default function NewChallengePage() {
   const navigate = useNavigate();
   const { getToken, logout } = useAuth();
@@ -13,7 +34,9 @@ export default function NewChallengePage() {
   const [timeComplexity, setTimeComplexity] = useState('');
   const [spaceComplexity, setSpaceComplexity] = useState('');
   const [aiAutonomyIndex, setAiAutonomyIndex] = useState<number>(3);
-  const [snippets, setSnippets] = useState<SnippetRequest[]>([{ code: '', description: '', conceptCategory: '' }]);
+  const [snippets, setSnippets] = useState<SnippetRequest[]>([
+    { code: '', description: '', conceptCategory: '' },
+  ]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -75,67 +98,88 @@ export default function NewChallengePage() {
   }
 
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto', padding: '0 1rem' }}>
-      <h1>Novo desafio</h1>
-      <p><Link to="/challenges">← Voltar</Link></p>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-3xl mx-auto">
+      <p className="mb-4">
+        <Link
+          to="/challenges"
+          className="text-gray-600 hover:text-codearchive-primary transition-colors"
+        >
+          ← Voltar
+        </Link>
+      </p>
+      <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-6">Novo desafio</h1>
+      <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          <div style={{ color: 'crimson', marginBottom: '0.5rem' }}>{error}</div>
+          <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+            {error}
+          </div>
         )}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="title">Título *</label>
+        <div>
+          <label htmlFor="title" className={labelClass}>
+            Título *
+          </label>
           <input
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            style={{ display: 'block', width: '100%', padding: '0.5rem' }}
+            className={inputClass}
           />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="platform">Plataforma (ex: LeetCode, Codewars)</label>
+        <div>
+          <label htmlFor="platform" className={labelClass}>
+            Plataforma (ex: LeetCode, Codewars)
+          </label>
           <input
             id="platform"
             value={platformOrigin}
             onChange={(e) => setPlatformOrigin(e.target.value)}
-            style={{ display: 'block', width: '100%', padding: '0.5rem' }}
+            className={inputClass}
           />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="sourceCode">Código-fonte *</label>
+        <div>
+          <label htmlFor="sourceCode" className={labelClass}>
+            Código-fonte *
+          </label>
           <textarea
             id="sourceCode"
             value={sourceCode}
             onChange={(e) => setSourceCode(e.target.value)}
             required
             rows={12}
-            style={{ display: 'block', width: '100%', padding: '0.5rem', fontFamily: 'monospace' }}
+            className={`${inputClass} font-mono text-sm bg-gray-50`}
           />
         </div>
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-          <div style={{ flex: 1 }}>
-            <label htmlFor="time">Complexidade temporal</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="time" className={labelClass}>
+              Complexidade temporal
+            </label>
             <input
               id="time"
               value={timeComplexity}
               onChange={(e) => setTimeComplexity(e.target.value)}
               placeholder="ex: O(n)"
-              style={{ display: 'block', width: '100%', padding: '0.5rem' }}
+              className={inputClass}
             />
           </div>
-          <div style={{ flex: 1 }}>
-            <label htmlFor="space">Complexidade espacial</label>
+          <div>
+            <label htmlFor="space" className={labelClass}>
+              Complexidade espacial
+            </label>
             <input
               id="space"
               value={spaceComplexity}
               onChange={(e) => setSpaceComplexity(e.target.value)}
               placeholder="ex: O(1)"
-              style={{ display: 'block', width: '100%', padding: '0.5rem' }}
+              className={inputClass}
             />
           </div>
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="aiIndex">Índice de autonomia IA (1–5)</label>
+        <div>
+          <label htmlFor="aiIndex" className={labelClass}>
+            Índice de autonomia IA (1–5)
+          </label>
           <input
             id="aiIndex"
             type="number"
@@ -143,62 +187,76 @@ export default function NewChallengePage() {
             max={5}
             value={aiAutonomyIndex}
             onChange={(e) => setAiAutonomyIndex(Number(e.target.value) || 3)}
-            style={{ display: 'block', width: '100%', padding: '0.5rem' }}
+            className="w-20 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-codearchive-primary focus:border-codearchive-primary"
           />
         </div>
 
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong>Snippets (aprendizados)</strong>
-            <button type="button" onClick={addSnippet}>+ Adicionar snippet</button>
-          </div>
-          {snippets.map((s, i) => (
-            <div
-              key={i}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: 8,
-                padding: '1rem',
-                marginTop: '0.5rem',
-              }}
+        <div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+            <strong className="text-gray-900">Snippets (aprendizados)</strong>
+            <button
+              type="button"
+              onClick={addSnippet}
+              className="px-3 py-1.5 text-sm font-medium text-codearchive-primary border border-codearchive-primary rounded-lg hover:bg-blue-50 transition-colors"
             >
-              <div style={{ marginBottom: '0.5rem' }}>
-                <label>Código do snippet</label>
-                <textarea
-                  value={s.code}
-                  onChange={(e) => updateSnippet(i, 'code', e.target.value)}
-                  rows={3}
-                  style={{ display: 'block', width: '100%', padding: '0.5rem', fontFamily: 'monospace' }}
-                />
-              </div>
-              <div style={{ marginBottom: '0.5rem' }}>
-                <label>Descrição</label>
-                <input
-                  value={s.description ?? ''}
-                  onChange={(e) => updateSnippet(i, 'description', e.target.value)}
-                  style={{ display: 'block', width: '100%', padding: '0.5rem' }}
-                />
-              </div>
-              <div style={{ marginBottom: '0.5rem' }}>
-                <label>Categoria do conceito</label>
-                <input
-                  value={s.conceptCategory ?? ''}
-                  onChange={(e) => updateSnippet(i, 'conceptCategory', e.target.value)}
-                  style={{ display: 'block', width: '100%', padding: '0.5rem' }}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => removeSnippet(i)}
-                style={{ marginTop: '0.25rem' }}
+              + Adicionar snippet
+            </button>
+          </div>
+          <div className="space-y-3">
+            {snippets.map((s, i) => (
+              <div
+                key={i}
+                className="border border-gray-200 rounded-lg p-4 bg-gray-50/50 space-y-3"
               >
-                Remover snippet
-              </button>
-            </div>
-          ))}
+                <div>
+                  <label className={labelClass}>Código do snippet</label>
+                  <textarea
+                    value={s.code}
+                    onChange={(e) => updateSnippet(i, 'code', e.target.value)}
+                    rows={3}
+                    className={`${inputClass} font-mono text-sm bg-white`}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição</label>
+                  <input
+                    value={s.description ?? ''}
+                    onChange={(e) => updateSnippet(i, 'description', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Categoria do conceito</label>
+                  <select
+                    value={s.conceptCategory ?? ''}
+                    onChange={(e) => updateSnippet(i, 'conceptCategory', e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="">Selecione...</option>
+                    {CONCEPT_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeSnippet(i)}
+                  className="text-sm text-gray-600 hover:text-red-600 transition-colors"
+                >
+                  Remover snippet
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <button type="submit" disabled={loading} style={{ padding: '0.5rem 1rem' }}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="py-2.5 px-6 text-sm font-medium text-white bg-codearchive-primary hover:bg-codearchive-primary-hover rounded-lg shadow-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
           {loading ? 'A guardar...' : 'Criar desafio'}
         </button>
       </form>
