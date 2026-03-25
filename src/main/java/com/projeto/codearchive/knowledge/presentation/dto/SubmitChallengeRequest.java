@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 public record SubmitChallengeRequest(
+    // A validação de entrada garante uma "falha rápida". Dessa maneira, requisições malformadas são rejeitadas em camadas mais iniciais, antes de alcançarem domínios, economizando ciclos de processamento e evitando estados inconsistentes na base de dados
     @NotBlank(message = "Title is required")
     String title,
 

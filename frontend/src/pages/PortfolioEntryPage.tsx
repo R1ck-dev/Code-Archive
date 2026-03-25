@@ -16,7 +16,7 @@ export default function PortfolioEntryPage() {
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200/80 p-6 sm:p-8">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Ver portfólio público</h1>
         <p className="text-gray-600 text-sm mb-6">
-          Introduza o ID (UUID) do autor para ver os desafios públicos.
+          Introduza o ID do autor para ver os desafios públicos.
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

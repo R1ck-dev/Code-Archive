@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto.codearchive.identity.application.dto.RegisterUserCommand;
 import com.projeto.codearchive.identity.application.dto.UserProfileResponse;
@@ -22,6 +23,8 @@ public class RegisterUserUseCase {
         this.passwordHasher = passwordHasher;
     }
 
+    // A anotação @Transactional garante que a operação ocorra dentro de um contexto ACID. Se a chamada userRepository.save(newUser) falhar devido a uma restrição de banco de dados não detectada previamente, toda a transação sofre rollback
+    @Transactional
     public UserProfileResponse execute(RegisterUserCommand command) {
         // Validação de Unicidade
         if (userRepository.existByEmail(command.email())) {

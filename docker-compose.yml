@@ -11,8 +11,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data # Mapeamento de volumes, impede a perda de dados caso o contêiner seja recriado ou destruído acidentalmente
     restart: unless-stopped
 
 volumes:
   postgres_data:
+
+# Para manter a integridade arquitetural e aderir aos princípios de Infraestrutura como Código (IaC), o SGDB será provisionado em um ambiente isolado
+
+# O encapsulamento da infraestrutura de dados no Docker garante maior portabilidade e eliminação de problemas onde o projeto roda em um máquina, mas não em outra. A versão alpine da imagem do PostgreSQL minimziza o consumo de recursos (memória e espaço em disco) durante o desenolvimento

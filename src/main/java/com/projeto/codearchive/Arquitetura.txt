@@ -1,0 +1,50 @@
+A arquitetura deve garantir o Princípio da Inversão de Dependência, portanto o núcleo do sistema (Domínio) não deve ter dependências transitivas para bibliotecas externas. As dependências devem apontar sempre de fora (Infraestrutura/Apresentação) para dentro (Domínio)
+
+Dessa maneira, a abordagem técnica buscada é o Empacotamento por Componente/Módulo (Package By Component), onde o primeiro nível de diretórios representa os contextos de limite, e o segundo nível representa as camadas referentes a Clean Architecture.
+
+com.codearchive
+├── shared/                         # Shared Kernel: Código comum entre módulos
+│   ├── domain/                     # Exceções de negócio globais, Value Objects comuns
+│   └── infrastructure/             # Configurações globais (ex: manipulador de exceções REST)
+│
+├── identity/                       # Módulo IdentityAccess
+│   ├── domain/                     # Enterprise Business Rules
+│   │   ├── model/                  # Entidades (User) e Value Objects
+│   │   └── repository/             # Interfaces (contratos) de persistência
+│   ├── application/                # Application Business Rules
+│   │   ├── dto/                    # Data Transfer Objects (Records)
+│   │   └── usecase/                # Orquestração de regras (UserRegistrationService)
+│   ├── infrastructure/             # Frameworks & Drivers
+│   │   ├── persistence/            # Entidades JPA (@Entity) e Spring Data Repositories
+│   │   └── security/               # Filtros do Spring Security e JWT
+│   └── presentation/               # Interface Adapters
+│       └── controller/             # Controladores REST (@RestController)
+│
+└── knowledge/                      # Módulo KnowledgeCore
+    ├── domain/                     
+    │   ├── model/                  # Entidades (Challenge, Snippet) e Enums
+    │   └── repository/             # Interfaces (ChallengeRepository)
+    ├── application/                
+    │   ├── dto/                    
+    │   └── usecase/                # ChallengeManagementService
+    ├── infrastructure/             
+    │   └── persistence/            # Entidades JPA, Mapeadores (Mappers)
+    └── presentation/               
+        └── controller/             # ChallengeController
+
+Enterprise Business (Domain): A camada mais interna e fundamental da Clean Architecture, também chamada de camada de domínio. Ela abriga as regras de negócios centrais e as entidades principais da aplicação. Nesta camada são definidas as entidades de domínio, que representam os objetos de negócios, e implementa as regras de negócios essenciais. Essas entidades e regras devem ser independentes de qualquer detalhe técnico e não devem depender de Frameworks ou tecnologias externas.
+
+Application Business Rules (Application): Responsável por coordenar a execuão dos casos de usos e gerenciar o fluxo da aplicação. Aqui devem ser definidos os casos de uso da aplicação, que representam funcionalidades específicas ou operações que o sistema pode realizar. Os casos de uso são implementados aqui e são responsáveis por orquestrar a interação entra as entidades do domínio. Atua como intermediário entre a interface do usuário e o domínio.
+
+Interface Adapaters: Fica entra as camadas de negóicos e as camadas externas como a interfaec de usuário e os frameworks externos. Aqui, devem ser adaptados os detalhes técnicos e as interfaces de entrada e saída para atender às necessidades das camadas de negócios, ajudando a manter as camadas internas isoladas das tecnologias externas.
+
+--------------------------------------------------------
+
+- domain/ : Deve ser a camada mais isolada e estável do sistema. Deve conter classes puras do Java e residir as Entidades, Objetos de Valor e Assinaturas de Interface. Nenhuma biblioteca externa ou anotação de banco de dados deve existir nesta camada.
+
+- application/ : Deve orquestrar o fluxo de dados entre a camada de apresenação e o domínio. Deve conter Serviços de Caso de Uso e DTOs. Esta camada recebe chamadas externas, busca entidades no domínio atráves das interfaces de repositório invoca os métodos das entidades e retorna DTOs
+
+- presentation/ : Deve interagir com o mundo externo recendo e formatando dados. Deve conter Controladores REST. Sua única função é receber requisições HTTP, validar a entrada básica em JSON, repassar para a camada de aplicação e formar a resposta HTTP.
+
+- infrastructure/ : Deve implementar os contratos (interfaces) definidos nas camadas internas e interagir com frameworks, banco de dados e APIs externas. Deve conter Entidades JPA, repositórios do Spring Data, Configurações de segurança, mapeadores para converter objetos JPA em objetos de Domínio Puro, além de Configurações globais do framework.
+

@@ -1,6 +1,6 @@
 package com.projeto.codearchive.identity.application.usecase;
 
-import java.util.UUID;
+// import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 

@@ -1,3 +1,8 @@
+-- Mecanismo de ação do Flyway:
+-- 1. O script SQL puro contendo as instruções de criação ou alteração de tabelas é escrito (ex: V1__Create_Users_Table.sql, V2__Add_Column_Complexity.sql).
+-- 2. Ao iniciar a aplicação, o Flyway verifica uma tabela de controle interna no PostgreSQL, geralmente chamda flyway_schema_history
+-- 3. Ele compara os scripts existentes no projeto com os que já foram executados e registrados nesta tabela
+-- 4. Se houver um novo script (ex: versão 2), ele executa o SQL e registra o sucesso na tabela de controle
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,

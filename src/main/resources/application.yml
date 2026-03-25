@@ -1,6 +1,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:codearchive_db}
+    #A utilização de sintaxe com variável permite que o mesmo arquivo de configuração seja empacotado e utilizado em produção
     username: ${DB_USER:codearchive_user}
     password: ${DB_PASS:codearchive_password}
     driver-class-name: org.postgresql.Driver
@@ -13,6 +14,12 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway: 
+    # Ferrmaneta de controle de versão para o banco de dados. Permite alterações de DDL (Data Definition Language) sejam tratadas como código e versionadas junto com a aplicação.
+    # O Flyway rastreia alterações estruturais DDL no banco de dados.
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration 
+
+# Essa configuração utiliza variáveis de ambiente com valores fallback, aderindo à práticas de configuração.
+
+# Sobre o FLYWAY: Delegar a criação do schema do banco de dados ao Hibernate (spring.jpa.hibernate.ddl-auto=update) pode ser considerdo uma má prática em ambientes mais avançados de desenvolvimento, visto que pode levar à perda acidental de dados ou inconsistências de tipagem. O Flyway utiliza de scripts SQ imutáveis.
