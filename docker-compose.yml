@@ -1,9 +1,9 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  postgres-db:
+  db:
     image: postgres:15-alpine
-    container_name: codearchive_pg
+    container_name: codearchive_db
     environment:
       POSTGRES_USER: codearchive_user
       POSTGRES_PASSWORD: codearchive_password
@@ -11,12 +11,42 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Mapeamento de volumes, impede a perda de dados caso o contêiner seja recriado ou destruído acidentalmente
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codearchive_user -d codearchive_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: codearchive_backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: codearchive_db
+      DB_USER: codearchive_user
+      DB_PASS: codearchive_password
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: codearchive_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
     restart: unless-stopped
 
 volumes:
   postgres_data:
-
-# Para manter a integridade arquitetural e aderir aos princípios de Infraestrutura como Código (IaC), o SGDB será provisionado em um ambiente isolado
-
-# O encapsulamento da infraestrutura de dados no Docker garante maior portabilidade e eliminação de problemas onde o projeto roda em um máquina, mas não em outra. A versão alpine da imagem do PostgreSQL minimziza o consumo de recursos (memória e espaço em disco) durante o desenolvimento
