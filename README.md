@@ -1,7 +1,3 @@
-# Code Archive - Executando com Docker Compose
-
-Este projeto agora pode ser executado com um único comando usando Docker Compose.
-
 ## Serviços disponíveis
 
 - **frontend**: React + Nginx em `http://localhost:3000`
