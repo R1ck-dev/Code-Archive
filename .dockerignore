@@ -1,0 +1,6 @@
+.git
+.gitignore
+frontend
+out
+CodeArchive-Local.session.sql
+**/target

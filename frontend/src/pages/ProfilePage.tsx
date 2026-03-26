@@ -24,7 +24,7 @@ export default function ProfilePage() {
             logout();
             navigate('/login', { replace: true });
           } else {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Erro inesperado ao carregar perfil.');
           }
         }
       } finally {
